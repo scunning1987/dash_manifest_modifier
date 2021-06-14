@@ -5,9 +5,11 @@ This variation of the DASH modifier script is designed to run as a post-transcod
 
 [insert pic here]
 
-## Prerequisites
-* prereq 1
-* prereq 2
+## Required
+* AWS Elemental Server w/ License
+* Python 3
+* PIP
+* XMLtoDict
 
 ## Deployment Instructions
 
