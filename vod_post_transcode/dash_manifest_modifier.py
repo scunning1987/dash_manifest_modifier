@@ -110,7 +110,7 @@ if __name__ == '__main__':
             p = mpddoc['MPD']['Period']
         else:
             p = mpddoc['MPD']['Period'][period]
-    #good to here            
+
         ### Modify at the Period Level Here ### START
         ## p['attribute']
         try:
@@ -123,7 +123,7 @@ if __name__ == '__main__':
             manifest_modify_exceptions.append("Period %s : Unable to remove EventStream element : %s" % (period,e))
         
         ### Modify at the Period Level Here ### END
-    # good to here       
+
         ### ADAPTATION SET
         if isinstance(p['AdaptationSet'], list):
             adaptationsets = len(p['AdaptationSet'])
