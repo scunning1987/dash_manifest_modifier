@@ -3,7 +3,7 @@
 ## Overview
 This variation of the DASH modifier script is designed to run as a post-transcode script, triggered by the transcoder as a post-processing event.
 
-[insert pic here]
+[Download script file here](./dash_manifest_modifier.py)
 
 ## Required
 * AWS Elemental Server w/ License
