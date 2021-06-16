@@ -5,7 +5,8 @@ This variation of the DASH modifier script is designed to be standalone, execute
 
 [Script contents](./dash_manifest_modifier.py)
 
-## Required
+#
+`## Required
 * Python 3
 * PIP
 * XMLtoDict
