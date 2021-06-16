@@ -80,6 +80,49 @@ This variation of the DASH modifier script is designed to run on AWS Lambda, and
 
 Add your AWS Lambda function as a target of the event, give the event trigger a name and save
 
-## How To Use
+            manifest_modify_exceptions.append("Can't change profile attribute value : %s" % (e))
+        
+        ### Modify at the MPD Level Here ### END
+```
 
-This is how you use...
+Example 2: At the Period level, removing the EventStream element and start attribute:
+```
+            ### Modify at the Period Level Here ### START
+            ## p['attribute']
+            try:
+                del p['@start']
+            except Exception as e:
+                manifest_modify_exceptions.append("Period %s : Unable to remove start attribute : %s" % (period,e))
+            try:
+                del p['EventStream']
+            except Exception as e:
+                manifest_modify_exceptions.append("Period %s : Unable to remove EventStream element : %s" % (period,e))
+        
+            ### Modify at the Period Level Here ### END
+```
+
+Example 3:  At the Adaptation Set level. Overriding SegmentAlignment attribute value, and adding Accessibility elements
+```
+                ### Modify at the AdaptationSet Level Here ### START
+                ## a['attribute']
+                try:
+                    a['@segmentAlignment'] = "true"
+                except Exception as e:
+                    manifest_modify_exceptions.append("Period %s - AdaptationSet %s : Unable to change segmentAlignment value : %s" % (period,adaptationset,e))
+        
+                try: # hard-code CC accessibility elements
+                    a['Role'] = {}
+                    a['Role']['@schemeIdUri'] = "urn:mpeg:dash:role:2011"
+                    a['Role']['@value'] = "main"
+                    if a['@mimeType'] == "video/mp4":
+                        a['Accessibility'] = {}
+                        a['Accessibility']['@schemeIdUri'] = "urn:scte:dash:cc:cea-608:2015"
+                        a['Accessibility']['@value'] = "CC1=eng"
+                except Exception as e:
+                    manifest_modify_exceptions.append("Period %s - AdaptationSet %s : Unable to add Closed Caption Elements : %s" % (period,adaptationset,e))
+
+        
+                ### Modify at the AdaptationSet Level Here ### END
+```
+
+In each 'try' block, there is an 'exception' block, designed to catch errors. Exceptions don't necessarily have to exit the function, and in this case all my code is doing is logging the exception to an error list. When the manifest modification is complete, any exceptions get written to the log or printed to the console. You can customize this how you like.. Just remember to put each add/edit/delete inside its own try-catch blocks, as shown in the above Adaptation Set example.

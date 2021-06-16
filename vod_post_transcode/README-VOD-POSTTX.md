@@ -94,14 +94,14 @@ pip install xmltodict
 
 This is how you modify/tweak the script to only edit the elements and attributes that you need to...
 
-To navigate to an element :  <MPD><element><subelement>value</subelement></element></MPD>
+To navigate to an element :  `<MPD><element><subelement>value</subelement></element></MPD>`
 
 it's done like this: 
 ```
 mpddoc['MPD']['element']['subelement'] = "newvalue"
 ```
 
-To navigate to an attribute : <MPD><element><subelement id='100'>value</subelement></element></MPD>
+To navigate to an attribute : `<MPD><element><subelement id='100'>value</subelement></element></MPD>`
 
 ... it's done like this:
 
