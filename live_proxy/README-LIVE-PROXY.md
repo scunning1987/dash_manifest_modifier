@@ -33,7 +33,12 @@ This variation of the DASH modifier script is designed to be proxy live requests
 
 The API Gateway endpoint invokes a Lambda, and sends the client request path as an event argument to the function. 
 
-Lambda then uses the path argument along with a predefined origin URL to fetch the manifest from the origin. 
+Lambda then uses the path argument along with a predefined origin URL to fetch the manifest from the origin. You can modify the static origin in the Lambda function's environment variable section.
+
+![](images/dash-manifest-live-proxy-env-var-origin.png?width=80pc&classes=border,shadow)
 
 Alternatively, the requester can override the predefined/assumed origin url by adding an (?origin=xxx) query parameter to the request URL. 
-If a query parameter is used, the origin url must be HTML encoded, ie: ```https://apigatewayendpoint.com/path/subpath/manifest.mpd?origin=https%3A%2F%2Fthisistheneworigin.com```
+If a query parameter is used, the origin url must be HTML encoded, ie: 
+```
+https://apigatewayendpoint.com/path/subpath/manifest.mpd?origin=https%3A%2F%2Fthisistheneworigin.com
+```
