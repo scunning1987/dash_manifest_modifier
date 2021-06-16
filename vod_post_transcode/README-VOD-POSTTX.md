@@ -92,7 +92,7 @@ pip install xmltodict
 
 ## How To Use/Modify
 
-This is how you modify/tweak the script to only edit the elements and attributes that you nened to...
+This is how you modify/tweak the script to only edit the elements and attributes that you need to...
 
 To navigate to an element :  <MPD><element><subelement>value</subelement></element></MPD>
 
