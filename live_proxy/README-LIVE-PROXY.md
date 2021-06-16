@@ -16,18 +16,37 @@ This variation of the DASH modifier script is designed to be proxy live requests
 ### AWS Lambda Function
 1. Login to the AWS console
 2. Navigate to the AWS Lambda service console
-3. Select **Create Function**
-4. For programming language, select: Python 3.8
-5. IAM service role, create new
+3. Select **Create function**
+4. Give the function a name, for example: **dash-manifest-modifier**
+4. For runtime, select: Python 3.8
+5. Select **Create function**
 6. In the function overview page, select the **Upload** button from the Code Block section
 7. Navigate to the Lambda zip file you downloaded from the prerequisites section
+8. Import the Zip!
+9. Go to the Configuration tab, then Environment Variables. Select the **Edit** button
+10. Add the key (case sensitive) : ORIGIN
+11. Add your origin base url, for example: `https://abcdef.egress.mediapackage-vod.us-west-2.amazonaws.com`
+12. Select the **Save** button
 
 ### Amazon API Gateway
 1. Login to the AWS console
-2. Navigate to the Amazon API Gateway console
-3. Under the RESTful API section, select **Import**
-4. Navigate to the API Gateway json file you downloaded from the prerequisites section
+2. Select **Create API**
+3. Under API Type, select **REST API - Import**
+4. In the *Import from Swagger or Ipen API3* section, select **Select Swagger File**
+5. Browse to the api gateway json file you downloaded earlier
+6. Select the **Import** button
+7. Under Resources, select the **Any** method, then select the **Integration Request** box
+8. Select the edit pencil next to **Lambda Region**, and select your Lambda region, , then select the tick box to the right of the field
+9. Select the edit pencil next to **Lambda Function**, delete the text in this field and start typing the name of your Lambda function until it auto-populates, then select the tick box to the right of the field
+10. Now select the 'root slash' `/` under the Resources pane, then select the **Actions** button, then **Deploy API**
+11. In the popup box that appears, select a new deployment stage, and give it name **v1**, then select the **Deploy** button
+12. Retrieve your Invoke URL by selecting the **Stages** pane, then expand your *v1* stage until you see methods under the `/{proxy+}` Resource, select the GET method, and note the Invoke URL that appears. It will look something like:
+```
+ Invoke URL: https://58xolfcabc.execute-api.us-west-2.amazonaws.com/v1/{proxy+} 
+```
 
+### Caching
+This guide doesn't discuss manifest caching, but it can and should be done to save unnecessary API Gateway transactions and AWS Lambda invocations. Amazon API Gateway has built-in [caching](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html). Alternatively, you could use a CDN like [CloudFront](https://aws.amazon.com/cloudfront/) in front of your API Gateway endpoint and apply caching there.
 
 ## How To Use
 
@@ -37,7 +56,7 @@ When you deploy your API Gateway stage, the invoke URL will look something like:
 https://wnbche8zd1.execute-api.us-west-2.amazonaws.com/vod/{proxy+}
 ```
 
-The URL to your video assets will look something like:
+The URL to your video assets may look something like:
 ```
 https://abcdef.cloudfront.net/12345/vod1/index.mpd
 ```
@@ -49,9 +68,7 @@ https://wnbche8zd1.execute-api.us-west-2.amazonaws.com/vod/12345/vod1/index.mpd
 
 The API Gateway endpoint invokes the Lambda function, and sends the client request path as an event argument to the function. 
 
-Lambda then uses the path argument along with a predefined origin URL to fetch the manifest from the origin. You can modify the static origin in the Lambda function's environment variable section.
-
-![](images/dash-manifest-live-proxy-env-var-origin.png?width=80pc&classes=border,shadow)
+Lambda then uses the path argument along with a predefined origin URL to fetch the manifest from the origin.
 
 Alternatively, the requester can override the predefined/assumed origin url by adding an (?origin=xxx) query parameter to the request URL. 
 If a query parameter is used, the origin url must be HTML encoded, ie: 
@@ -63,14 +80,14 @@ https://wnbche8zd1.execute-api.us-west-2.amazonaws.com/vod/12345/vod1/index.mpd?
 
 This is how you modify/tweak the script to only edit the elements and attributes that you need to...
 
-To navigate to an element :  <MPD><element><subelement>value</subelement></element></MPD>
+To navigate to an element :  `<MPD><element><subelement>value</subelement></element></MPD>`
 
 it's done like this:
 ```
 mpddoc['MPD']['element']['subelement'] = "newvalue"
 ```
 
-To navigate to an attribute : <MPD><element><subelement id='100'>value</subelement></element></MPD>
+To navigate to an attribute : `<MPD><element><subelement id='100'>value</subelement></element></MPD>`
 
 ... it's done like this:
 
