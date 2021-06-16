@@ -3,7 +3,7 @@
 ## Overview
 This variation of the DASH modifier script is designed to run on AWS Lambda, and should be triggered via a CloudWatch event (on the completion of an AWS Elemental MediaConvert transcode job).
 
-![](images/dash-manifest-vod-lambda-architecture.png?width=50pc&classes=border,shadow)
+![](images/dash-manifest-vod-lambda-architecture.png?width=80pc&classes=border,shadow)
 
 ## Prerequisites
 
@@ -78,8 +78,67 @@ This variation of the DASH modifier script is designed to run on AWS Lambda, and
 
 *Note: From this point on, any MediaConvert job completion events that match the event pattern above will trigger the rule to invoke your Lambda function*
 
-Add your AWS Lambda function as a target of the event, give the event trigger a name and save
+Add your AWS Lambda function as a target of the event, give the event trigger a name and save!
 
+## How To Use
+
+
+This is how you modify/tweak the script to only edit the elements and attributes that you need to...
+
+To navigate to an element :  `<MPD><element><subelement>value</subelement></element></MPD>`
+
+it's done like this:
+```
+mpddoc['MPD']['element']['subelement'] = "newvalue"
+```
+
+To navigate to an attribute : `<MPD><element><subelement id='100'>value</subelement></element></MPD>`
+
+... it's done like this:
+
+```
+mpddoc['MPD']['element']['subelement']['@id'] = "200"
+```
+
+To add elements/attributes, there is an example in the Lambda function already for Accessibility, it's pasted here also, the '###' indicate my comments inline:
+
+```
+a = mpddoc['MPD']['Period']['AdaptationSet'] ### This is of how to browse to an AdaptationSet
+a['Role'] = {} ### This is creating a new Element called 'Role' <Role></Role>
+a['Role']['@schemeIdUri'] = "urn:mpeg:dash:role:2011" ### This is adding an attribe to the element <Role schemeIdUri="urn:mpeg:dash:role:2011"></Role>
+a['Role']['@value'] = "main" ### This is adding an attribe to the element <Role schemeIdUri="urn:mpeg:dash:role:2011" value="main"></Role>
+if a['@mimeType'] == "video/mp4":
+  a['Accessibility'] = {} ### This is creating a new Element called 'Accessibility' <Accessibility></Accessibility>
+  a['Accessibility']['@schemeIdUri'] = "urn:scte:dash:cc:cea-608:2015" ### This is adding an attribute to the element
+  a['Accessibility']['@value'] = "CC1=eng" ### This is adding an attribute to the element
+```
+
+To delete elements from the DASH Manifest,
+```
+del mpddoc['MPD']['Period']['EventStream']
+```
+To delete attributes from the DASH manifest:
+```
+del mpddoc['MPD']['Period']['@start']
+```
+
+There are some examples already in the manifest demonstrating some of these actions. There are comments at each section to instruct you where to put your code. Like so:
+```
+### Modify at the Period Level Here ### START ##
+
+[ PUT YOUR CODE HERE ]
+
+### Modify at the Period Level Here ### END
+```
+
+Example 1: At the MPD level, overriding the MPD 'profiles' level produced by the Packager:
+```
+        ### Modify at the MPD Level Here ### START
+        # EXAMPLE : mpddoc['MPD']['@attribute'] == XX
+        
+        try:
+            mpddoc['MPD']['@profiles'] = "urn:mpeg:dash:profile:isoff-live:2011"
+        except Exception as e:
             manifest_modify_exceptions.append("Can't change profile attribute value : %s" % (e))
         
         ### Modify at the MPD Level Here ### END
