@@ -184,6 +184,7 @@ Example 3:  At the Adaptation Set level. Overriding SegmentAlignment attribute v
                 ### Modify at the AdaptationSet Level Here ### END
 ```
 
+
 In each 'try' block, there is an 'exception' block, designed to catch errors. Exceptions don't necessarily have to exit the function, and in this case all my code is doing is logging the exception to an error list. When the manifest modification is complete, any exceptions get written to the log or printed to the console. You can customize this how you like.. Just remember to put each add/edit/delete inside its own try-catch blocks, as shown in the above Adaptation Set example.
 
 Once you're finished customizing the function, select the Orange **Deploy** button to save changes immediately.
