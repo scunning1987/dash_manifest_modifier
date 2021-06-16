@@ -57,12 +57,11 @@ LOGGER.addHandler(ch)
 if __name__ == '__main__':
 
     LOGGER.info("Starting DASH Manifest Modifier script")
-    server_args = json.loads(sys.argv[1])
-    LOGGER.debug("Elemental Server Output : %s " % (str(server_args)))
-    LOGGER.info(server_args['output_groups'][0]['outputs'][0]['output_path'])
+    user_args = json.loads(sys.argv[1])
+    LOGGER.info("Attempting to modify manifest in this location : %s " % (user_args))
 
 
-    dash_mpd_path = server_args['output_groups'][0]['outputs'][0]['output_path']
+    dash_mpd_path = user_args
 
     try:
         cat_command = 'cat %s' % (dash_mpd_path)
@@ -187,7 +186,7 @@ if __name__ == '__main__':
     ##
     ##  Write New DASH Manifest to previous one
     ##
-    dash_mpd_path = dash_mpd_path + "-new.mpd"
+    #dash_mpd_path = dash_mpd_path + "-new.mpd"
     f = open( dash_mpd_path, 'w+' )
     f.write( str(new_mpd) )
     f.close() 
