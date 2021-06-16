@@ -3,7 +3,7 @@
 ## Overview
 This variation of the DASH modifier script is designed to run on AWS Lambda, and should be triggered via a CloudWatch event (on the completion of an AWS Elemental MediaConvert transcode job).
 
-![](images/dash-manifest-vod-lambda-architecture.png?width=80pc&classes=border,shadow)
+![](images/dash-manifest-vod-lambda-architecture.png?width=50pc&classes=border,shadow)
 
 ## Prerequisites
 
