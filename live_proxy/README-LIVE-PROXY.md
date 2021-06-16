@@ -3,7 +3,7 @@
 ## Overview
 This variation of the DASH modifier script is designed to be proxy live requests from a client and modify the manifest from the origin before serving to the client.
 
-[insert pic here]
+![](images/dash-manifest-live-proxy-architecture.png?width=80pc&classes=border,shadow)
 
 ## Prerequisites
 * You need to have an AWS account
