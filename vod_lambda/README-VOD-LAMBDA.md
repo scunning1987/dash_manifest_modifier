@@ -10,7 +10,7 @@ This variation of the DASH modifier script is designed to run on AWS Lambda, and
 * You need to have an AWS account
 * Your IAM user/role must be able to create: AWS Lambda function, IAM Role/Policy, Amazon CloudWatch Rule
 * MediaConvert will be the transcoder used for this workflow
-* Download the Lambda Function zip file from [here]()
+* Download the Lambda Function zip file from [here](scripts/dash-manipulator-lambda-vod-emc.zip)
 
 ## Deployment Instructions
 
