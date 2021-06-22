@@ -31,11 +31,11 @@ def lambda_handler(event, context):
     except Exception as e:
         LOGGER.error("Got wrong event as a trigger for this function. This function needs to parse event[region] and event[detail][jobid]. This is what we received : %s " % (event))
         raise Exception("Got wrong event as a trigger for this function. This function needs to parse event[region] and event[detail][jobid]. This is what we received : %s " % (event))
-   
-    
+
+
     # get the account-specific mediaconvert endpoint for this region
     mediaconvert_client = boto3.client('mediaconvert', region_name=region)
-    
+
     try:
         endpoints = mediaconvert_client.describe_endpoints()
     except:
@@ -48,18 +48,18 @@ def lambda_handler(event, context):
     except:
         LOGGER.error("Unable to get job data from MediaConvert, got exception: %s " % (e))
         raise Exception("Unable to get job data from MediaConvert, got exception: %s " % (e))
-    
+
     # Get the ESAM Data and put NPTpoints into List
     job_details = json.loads(json.dumps(response, default = lambda o: f"<<non-serializable: {type(o).__qualname__}>>"))
     esam_xml = job_details['Job']['Settings']['Esam']['SignalProcessingNotification']['SccXml']
     esam_doc = xmltodict.parse(esam_xml.replace("\n"," "))
-    
+
     esam_break_points = []
     esam_break_points_duration = []
     for signal in esam_doc['SignalProcessingNotification']['ResponseSignal']:
         try:
             duration_string = signal['sig:SCTE35PointDescriptor']['sig:SegmentationDescriptorInfo']['@duration']
-    
+
             # If break is minutes long, convert any M integer to seconds
             try:
                 duration_m = int(re.search('PT(.+?)M', duration_string).group(1))
@@ -67,7 +67,7 @@ def lambda_handler(event, context):
             except AttributeError:
                 # PT<>M not found in ESAM duration
                 duration_m_s = 0 # apply your error handling
-            
+
             # If break is seconds long, grab the S integer
             if re.search('PT[0-9]M(.+?)S', duration_string):
                 duration_s = int(re.search('PT[0-9]M(.+?)S', duration_string).group(1))
@@ -78,7 +78,7 @@ def lambda_handler(event, context):
                     duration_s = 30
                 else:
                     duration_s = str(0)
-            
+
             # Duration of break in seconds
             break_duration = duration_m_s + duration_s
         except:
@@ -88,8 +88,8 @@ def lambda_handler(event, context):
         if signal['sig:SCTE35PointDescriptor']['sig:SegmentationDescriptorInfo']['@segmentTypeId'] == "52":
             esam_break_points_duration.append([signal['@signalPointID'],break_duration])
             esam_break_points.append(signal['@signalPointID'])
-    
-    
+
+
     # Get the MPD and VTT if present
     VTTPRESENT = False
     for outputgroup in event['detail']['outputGroupDetails']:
@@ -104,14 +104,14 @@ def lambda_handler(event, context):
             else:
                 outputs = 1
                 o_layout = "s"
-    
+
             ### PERIOD
             for output in range(0,outputs):
                 if o_layout == "s":
                     o = outputgroup['type']
                 else:
                     o = outputgroup['outputDetails'][output]
-                
+
                 final_path_name = '/'.join(o['outputFilePaths'][0].split("/")[-2:])
                 if "vtt" in final_path_name or "VTT" in final_path_name or "Vtt" in final_path_name:
                     if ".jpg" not in final_path_name:
@@ -121,11 +121,11 @@ def lambda_handler(event, context):
                         vtt_full =  o['outputFilePaths'][0] + ".vtt"
                 ### Get details at the Period Level Here ### START
                 ## p['attribute']
-            
-    
+
+
     # Name for the new MPD that will supercede the MediaConvert manifest
     new_key = key.replace(".mpd","-dai.mpd")
-    
+
     # Get Manifest from S3
     try:
         key = event['detail']['outputGroupDetails'][0]['playlistFilePaths'][0].split("/",3)[3]
@@ -133,7 +133,7 @@ def lambda_handler(event, context):
     except Exception as e:
         LOGGER.error("Failed to get manifest from S3, got exception : %s " % (e))
         raise Exception("Failed to get manifest from S3, got exception : %s " % (e))
-        
+
     # Get VTT File from S3 if present
     if VTTPRESENT:
         LOGGER.info("There is a webVTT file present in the job output, location : %s " % (vtt_full))
@@ -145,37 +145,37 @@ def lambda_handler(event, context):
         except Exception as e:
             LOGGER.error("Unable to get WebVTT file from S3, got exception : %s " % (e))
             raise Exception("Unable to get WebVTT file from S3, got exception : %s " % (e))
-    
+
     # Read the MPD into a variable and convert from xml to Dict
     mpd_file = data_mpd['Body'].read()
     mpddoc = xmltodict.parse(mpd_file)
 
     # Create a list to track exceptions and exit if necessary
     manifest_exceptions = []
-    
+
     if MANIFESTUPDATE == "True":
-        
+
         ### All of the MPD Get details/delete actions below are inside TRY blocks
         ### Add or remove more Get details/delete/add actions inside individual TRY block
         ### Any exceptions will be caught and displayed in a DEBUG message. 
         ### Any exception deemed to great to recover from will exit the function
         ### An exception does not cause the workflow to fail
-        
+
         LOGGER.info("Manifest Modifier: Starting...")
-        
+
         ### Get details at the MPD Level Here ### START
         # EXAMPLE : mpddoc['MPD']['@attribute'] == XX
-        
-            
+
+
         mpd_header = dict(mpddoc['MPD'])
         mpd_header['@xmlns:scte35'] = "urn:scte:scte35:2013:xml"
         del mpd_header['Period']
-        
+
         ### Get details at the MPD Level Here ### END
-        
+
         adaptation_sets = dict()
         representations_d = dict()
-        
+
         if isinstance(mpddoc['MPD']['Period'], list):
             periods = len(mpddoc['MPD']['Period'])
             LOGGER.debug("Manifest Modifier: Manifest has %s Periods" % (str(periods)))
@@ -191,13 +191,13 @@ def lambda_handler(event, context):
                 p = mpddoc['MPD']['Period']
             else:
                 p = mpddoc['MPD']['Period'][period]
-                
+
             ### Get details at the Period Level Here ### START
             ## p['attribute']
 
-            
+
             ### Get details at the Period Level Here ### END
-            
+
             ### ADAPTATION SET
             if isinstance(p['AdaptationSet'], list):
                 adaptationsets = len(p['AdaptationSet'])
@@ -212,14 +212,14 @@ def lambda_handler(event, context):
                     a = p['AdaptationSet']
                 else:
                     a = p['AdaptationSet'][adaptationset]
-                
+
                 adapt_reps = []
                 a_dict = dict(a)
                 del a_dict['Representation']
                 ### Get details at the AdaptationSet Level Here ### START
                 ## a['attribute']
-                
-                
+
+
                 if a['@mimeType'] == "audio/mp4": # this is audio
                     try:
                         adaptation_set_type = "audio!" + a['Label']
@@ -228,20 +228,20 @@ def lambda_handler(event, context):
                             adaptation_sets[adaptation_set_type]['representations'] = ""
                     except:
                         raise Exception("Audio Adaptation Sets must be labeled.")
-                
+
                 elif a['@mimeType'] == "video/mp4": # assume video
                     adaptation_set_type = a['@mimeType']
                     if adaptation_set_type not in adaptation_sets:
                         adaptation_sets[adaptation_set_type] = a_dict
                         adaptation_sets[adaptation_set_type]['representations'] = ""
                 #
-                
+
                 #adapt_reps.append(r['@id'])
                 #adaptation_sets[adaptation_set_type]['representations'] = adapt_reps
-                
+
                 ### Get details at the AdaptationSet Level Here ### END
-                
-        
+
+
                 ### REPRESENTATION ###
                 if isinstance(a['Representation'], list):
                     representations = len(a['Representation'])
@@ -260,7 +260,7 @@ def lambda_handler(event, context):
 
                     rep_id = str(r['@id'])
                     rep_details = dict(r)
-                    
+
                     ### Get details at the Representation Level Here ### START
                     ## r['attribute']
                     if isinstance(r['SegmentTemplate']['SegmentTimeline']['S'],list):
@@ -271,17 +271,17 @@ def lambda_handler(event, context):
                         timeline = 1
                         LOGGER.debug("Manifest Modifier: Representation %s has single segment timeline element in timeline" % (r))
                         t_layout = "s"
-                    
+
                     adapt_reps.append(rep_id)
-                    
+
                     rep_segments = []
                     rep_segments.clear()
                     for segmenttime in range(0,timeline):
                         if t_layout == "s":
-                             t = r['SegmentTemplate']['SegmentTimeline']['S']
+                            t = r['SegmentTemplate']['SegmentTimeline']['S']
                         else:
                             t = r['SegmentTemplate']['SegmentTimeline']['S'][segmenttime]
-                        
+
                         segtime = t['@t']
                         segdur = t['@d']
                         rep_segments.append({"@t":segtime,"@d":segdur})
@@ -302,7 +302,7 @@ def lambda_handler(event, context):
                         representations_d[rep_id]['segments'] = merge_segments
                     else:
                         representations_d[rep_id]['segments'] = rep_segments
-                            
+
                 adaptation_sets[adaptation_set_type]['representations'] = adapt_reps
         # get the video timescale to calculate duration
         try:
@@ -311,128 +311,110 @@ def lambda_handler(event, context):
             LOGGER.error("Unable to get timescale from adaptation set, got exception %s " % (e))
             manifest_exceptions("Unable to get timescale from adaptation set, got exception %s " % (e))
             raise Exception("Unable to get timescale from adaptation set, got exception %s " % (e))
-        
+
         # Asset Duration , calculated from last PTS stamp of representation id 1 + duration of that segment
         duration_pts = int(representations_d['1']['segments'][-1]['@t']) + int(representations_d['1']['segments'][-1]['@d'])
         duration_presentation_m = int((duration_pts / int(video_timescale)) / 60)
         duration_presentation_s = round((duration_pts / int(video_timescale)) - (duration_presentation_m * 60),3)
         duration_presentation = "PT"+str(duration_presentation_m)+"M"+str(duration_presentation_s)+"S"
-        
-        
-        ### VTT Segment creation start
-        vtt_representation_id = '/'.join(vtt_full_no_ext.rsplit("/",3)[-2:])
-        
-        # Create VTT Representation and add to dict
-        vtt_representation = str(len(representations_d) + 1)
-        representations_d[vtt_representation] = copy.deepcopy(representations_d[list(representations_d.keys())[0]])
-        representations_d[vtt_representation] = {}
-        representations_d[vtt_representation]['@id'] = vtt_representation_id #Path to vtt base /vtt/fullvtt
-        representations_d[vtt_representation]['@bandwidth'] = "52"
-        representations_d[vtt_representation]['SegmentTemplate'] = {}
-        representations_d[vtt_representation]['SegmentTemplate']['@timescale'] = video_timescale
-        representations_d[vtt_representation]['SegmentTemplate']['@media'] = "$RepresentationID$_$Number$.vtt"
-        representations_d[vtt_representation]['segments'] = copy.deepcopy(representations_d[list(representations_d.keys())[0]]['segments'])
-        
-        # Create VTT Adaptation Set
-        vtt_dict = dict()
-        vtt_dict['text/vtt'] = {}
-        vtt_dict['text/vtt']['@mimeType'] = "text/vtt"
-        vtt_dict['text/vtt']['@lang'] = "en"
-        vtt_dict['text/vtt']['SegmentTemplate'] = {}
-        vtt_dict['text/vtt']['SegmentTemplate']['@timescale'] = video_timescale
-        vtt_dict['text/vtt']['representations'] = [vtt_representation]
 
-        # Add Adaptation Set to dict
-        adaptation_sets.update(vtt_dict)
-        
-        # Create VTT segments from full vtt
-        LOGGER.info("Starting VTT Segmenter process.. this may take a few minutes")
-        vtt_segment_number = 1
-        for segment in representations_d[vtt_representation]['segments']:
-            new_vtt = []
-            new_vtt.clear()
-            vtt_start = float(float(segment['@t']) / float(video_timescale))
-            vtt_end = float(vtt_start + float(segment['@d']) / float(video_timescale))
-            
-            lines_to_delete = []
-            for line in range(1,len(vtt_list)):
-                if not vtt_list[line][0:2].isdigit():
-                    # this line is malformed or should be a part of the previous line
-                    vtt_list[line-1] = vtt_list[line-1] + "\n" + vtt_list[line]
-                    lines_to_delete.append(int(line))
-            
-            lines_to_delete.sort(reverse = True )
-            for ltd in lines_to_delete:
-                #return ltd
-                vtt_list.pop(ltd)
-    
-            new_vtt.append(vtt_list[0] + "\n\n") 
-            for line_number in range(1,len(vtt_list)):
-                if len(vtt_list[line_number]) < 20:
-                    LOGGER.info("VTT Line number %s has no good VTT Data, malformed or empty" % (line_number) )
-                else:
-                    start_time_str = vtt_list[line_number].split("-->")[0].replace(" ","") # "00:00:01.042"
-                    end_time_str = vtt_list[line_number].split("-->")[1].split(" ")[1].split("\n")[0]
 
-                    start_time_seconds = (int(start_time_str.split(":")[0]) * 3600) + (int(start_time_str.split(":")[1]) * 60) + float(start_time_str.split(":")[2])
-                    end_time_seconds = (int(end_time_str.split(":")[0]) * 3600) + (int(end_time_str.split(":")[1]) * 60) + float(end_time_str.split(":")[2])
-                    
-                    if start_time_seconds >= vtt_start and start_time_seconds < vtt_end:
-                        new_start_time_seconds = datetime.timedelta(seconds = start_time_seconds - vtt_start)
-                        new_end_time_seconds = datetime.timedelta(seconds = end_time_seconds - vtt_start)
-                        new_start_time = str("0") + str(new_start_time_seconds)[:-3]
-                        new_end_time = str("0") + str(new_end_time_seconds)[:-3]
-                        new_start_time = start_time_str
-                        new_end_time = end_time_str
-    
-                        new_vtt.append(vtt_list[line_number].replace("â\u0099ª","♪").replace(start_time_str,new_start_time).replace(end_time_str,new_end_time) + "\n\n") ## the string replace is because the 'music note' gets malformed during the vtt response decode
-    
-            vtt_str = ""
-            for line in new_vtt:
-                vtt_str = vtt_str + line
-    
-            # bucket is known
-            # key is = original key + _ + segment_number + .vtt
-            new_vtt_key = "%s_%s.vtt" % (vtt_full_no_ext.split("/",3)[-1],vtt_segment_number)
-            try:
-                s3_put_response = s3.put_object(Body=vtt_str, Bucket=bucket, Key=new_vtt_key, ACL='public-read')
-            except Exception as e:
-                manifest_exceptions.append("Unable to write new VTT File to S3, got exception : %s " % (e))
-            
-            vtt_segment_number += 1
-        
-        ### VTT Creation Process
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        if VTTPRESENT:
+            ### VTT Segment creation start
+            vtt_representation_id = '/'.join(vtt_full_no_ext.rsplit("/",3)[-2:])
+
+            # Create VTT Representation and add to dict
+            vtt_representation = str(len(representations_d) + 1)
+            representations_d[vtt_representation] = copy.deepcopy(representations_d[list(representations_d.keys())[0]])
+            representations_d[vtt_representation] = {}
+            representations_d[vtt_representation]['@id'] = vtt_representation_id #Path to vtt base /vtt/fullvtt
+            representations_d[vtt_representation]['@bandwidth'] = "52"
+            representations_d[vtt_representation]['SegmentTemplate'] = {}
+            representations_d[vtt_representation]['SegmentTemplate']['@timescale'] = video_timescale
+            representations_d[vtt_representation]['SegmentTemplate']['@media'] = "$RepresentationID$_$Number$.vtt"
+            representations_d[vtt_representation]['segments'] = copy.deepcopy(representations_d[list(representations_d.keys())[0]]['segments'])
+
+            # Create VTT Adaptation Set
+            vtt_dict = dict()
+            vtt_dict['text/vtt'] = {}
+            vtt_dict['text/vtt']['@mimeType'] = "text/vtt"
+            vtt_dict['text/vtt']['@lang'] = "en"
+            vtt_dict['text/vtt']['SegmentTemplate'] = {}
+            vtt_dict['text/vtt']['SegmentTemplate']['@timescale'] = video_timescale
+            vtt_dict['text/vtt']['representations'] = [vtt_representation]
+
+            # Add Adaptation Set to dict
+            adaptation_sets.update(vtt_dict)
+
+            # Create VTT segments from full vtt
+            LOGGER.info("Starting VTT Segmenter process.. this may take a few minutes")
+            vtt_segment_number = 1
+            for segment in representations_d[vtt_representation]['segments']:
+                new_vtt = []
+                new_vtt.clear()
+                vtt_start = float(float(segment['@t']) / float(video_timescale))
+                vtt_end = float(vtt_start + float(segment['@d']) / float(video_timescale))
+
+                lines_to_delete = []
+                for line in range(1,len(vtt_list)):
+                    if not vtt_list[line][0:2].isdigit():
+                        # this line is malformed or should be a part of the previous line
+                        vtt_list[line-1] = vtt_list[line-1] + "\n" + vtt_list[line]
+                        lines_to_delete.append(int(line))
+
+                lines_to_delete.sort(reverse = True )
+                for ltd in lines_to_delete:
+                    #return ltd
+                    vtt_list.pop(ltd)
+
+                new_vtt.append(vtt_list[0] + "\n\n")
+                for line_number in range(1,len(vtt_list)):
+                    if len(vtt_list[line_number]) < 20:
+                        LOGGER.info("VTT Line number %s has no good VTT Data, malformed or empty" % (line_number) )
+                    else:
+                        start_time_str = vtt_list[line_number].split("-->")[0].replace(" ","") # "00:00:01.042"
+                        end_time_str = vtt_list[line_number].split("-->")[1].split(" ")[1].split("\n")[0]
+
+                        start_time_seconds = (int(start_time_str.split(":")[0]) * 3600) + (int(start_time_str.split(":")[1]) * 60) + float(start_time_str.split(":")[2])
+                        end_time_seconds = (int(end_time_str.split(":")[0]) * 3600) + (int(end_time_str.split(":")[1]) * 60) + float(end_time_str.split(":")[2])
+
+                        if start_time_seconds >= vtt_start and start_time_seconds < vtt_end:
+                            new_start_time_seconds = datetime.timedelta(seconds = start_time_seconds - vtt_start)
+                            new_end_time_seconds = datetime.timedelta(seconds = end_time_seconds - vtt_start)
+                            new_start_time = str("0") + str(new_start_time_seconds)[:-3]
+                            new_end_time = str("0") + str(new_end_time_seconds)[:-3]
+                            new_start_time = start_time_str
+                            new_end_time = end_time_str
+
+                            new_vtt.append(vtt_list[line_number].replace("â\u0099ª","♪").replace(start_time_str,new_start_time).replace(end_time_str,new_end_time) + "\n\n") ## the string replace is because the 'music note' gets malformed during the vtt response decode
+
+                vtt_str = ""
+                for line in new_vtt:
+                    vtt_str = vtt_str + line
+
+                # bucket is known
+                # key is = original key + _ + segment_number + .vtt
+                new_vtt_key = "%s_%s.vtt" % (vtt_full_no_ext.split("/",3)[-1],vtt_segment_number)
+                try:
+                    s3_put_response = s3.put_object(Body=vtt_str, Bucket=bucket, Key=new_vtt_key, ACL='public-read')
+                except Exception as e:
+                    manifest_exceptions.append("Unable to write new VTT File to S3, got exception : %s " % (e))
+
+                vtt_segment_number += 1
 
         ### VTT Segment creation end
-        
+
         LOGGER.info("Parsed manifest completely, now going to make a single period manifest with %s EventStream Elements" % (str(len(esam_break_points))))
         LOGGER.info("NPT Points are at : %s " % (esam_break_points))
-        
+
         period_timing = dict()
         period_number = 1
         period_timing[str(period_number)] = 0,duration_pts
-        
+
         ## Create EventStream Elements
         eventstream = []
 
-        
+
 
         scte_type = [52,53]
         for break_point in range(0,len(esam_break_points_duration)):
@@ -442,9 +424,9 @@ def lambda_handler(event, context):
                 duration = int(float(break_info[1]) * float(video_timescale))
                 event_id = str(break_point)
 
-                    
+
                 LOGGER.debug("EventStream PTS time %s " % (str(pts_time)))
-            
+
                 scte_event = dict()
                 scte_event['@timescale'] = video_timescale
                 scte_event['@duration'] = str(duration)
@@ -476,7 +458,7 @@ def lambda_handler(event, context):
 
                 eventstream.append(scte_event)
 
-        
+
         # Start building new MPD
         new_mpd_period_layout = []
         p_representations = dict()
@@ -487,14 +469,14 @@ def lambda_handler(event, context):
             p_representations = copy.deepcopy(representations_d)
             p_adaptation_sets = copy.deepcopy(adaptation_sets)
 
-            
+
             period_start = period_timing[new_mpd_period][0]
             period_end = period_timing[new_mpd_period][1]
             representation_index = dict()
             representation_collapse = dict()
-            
+
             LOGGER.info("New Manifest Period %s has duration %s PTS" % (str(period_start),str(period_end)))
-            
+
             period_duration = dict()
             for r in p_representations:
                 representation_index[str(r)] = []
@@ -507,7 +489,7 @@ def lambda_handler(event, context):
                 for a in p_adaptation_sets:
                     if r in p_adaptation_sets[a]['representations']:
                         factor = float(p_adaptation_sets[a]['SegmentTemplate']['@timescale'])
-                
+
                 if factor == 0:
                     manifest_exceptions.append("Unable to get timescale from the adaptation set of representation %s" % (str(r)))
 
@@ -527,64 +509,64 @@ def lambda_handler(event, context):
                 # representation_index[r] should have all segments in timeline listed explicitly. now we can compress with @r attributes
                 segment_count = 0
                 repeat_timeline = []
-                
+
                 while segment_count < len(representation_index[str(r)]):
-                
+
                     repeat_counter = 0
                     segment_timeline = copy.deepcopy(representation_index[str(r)][segment_count])
-    
+
                     #if segment_count < len(representation_index[r]):
-                        
+
                     repeat_true = "true"
                     while repeat_true == "true" and segment_count + 1 < len(representation_index[str(r)]):
-                        
+
                         if segment_count + 1 < len(representation_index[r]):
-                            
+
                             if representation_index[str(r)][segment_count+1]['@d'] is representation_index[str(r)][segment_count]['@d']:
-                                
+
                                 repeat_counter += 1
                                 segment_count += 1
                             else:
                                 repeat_true = "false"
-    
-                    if repeat_counter > 0: 
+
+                    if repeat_counter > 0:
                         segment_timeline.update({"@r":repeat_counter})
                         #segment_timeline.update({"@t":segment_timeline['@t'],"@d":segment_timeline['@d'], "@r":repeat_counter})
                     repeat_timeline.append(segment_timeline)
                     segment_count += 1
                 representation_collapse[r] = repeat_timeline
-                
+
                 representation_index['startNumber_'+str(r)] = start_index[0]
                 representation_index['periodDuration_'+str(new_mpd_period)] = period_duration_presentation
-            
+
             for a in p_adaptation_sets:
 
                 adaptation_representation = []
                 for r in p_adaptation_sets[a]['representations']:
-                    
+
                     representation_header = dict(p_representations[r])
-                     
+
                     del representation_header['segments']
                     representation_header['SegmentTemplate'].update(p_adaptation_sets[a]['SegmentTemplate'])
                     representation_header['SegmentTemplate']['SegmentTimeline'] = {}
                     representation_header['SegmentTemplate']['SegmentTimeline']['S'] = representation_collapse[r] # representation_collapse will have 'r' attributes in segment timelines
 
                     representation_header['SegmentTemplate']['@startNumber'] = str(representation_index['startNumber_'+r])
-    
+
                     adaptation_representation.append(representation_header)
-                    
+
                     representation_header['SegmentTemplate']['@presentationTimeOffset'] = adaptation_representation[0]['SegmentTemplate']['SegmentTimeline']['S'][0]['@t']
-                    
+
                 p_adaptation_sets[a]['@segmentAlignment'] = "true"
                 del p_adaptation_sets[a]['representations']
                 del p_adaptation_sets[a]['SegmentTemplate']
                 p_adaptation_sets[a]['Representation'] = adaptation_representation
-            
+
             new_ad_sets = []
-            
+
             for a in p_adaptation_sets:
                 new_ad_sets.append(p_adaptation_sets[a])
-            
+
             new_mpd_period_layout.append({"@start":"PT0.00S","@duration":period_duration["1"], "@id":new_mpd_period, "EventStream":{"@timescale":video_timescale,"@schemeIdUri":"urn:scte:scte35:2013:xml", "Event":eventstream}, "AdaptationSet":new_ad_sets})
             #new_mpd_period_layout.append({"@duration":period_duration["1"], "@id":new_mpd_period, "AdaptationSet":new_ad_sets})
 

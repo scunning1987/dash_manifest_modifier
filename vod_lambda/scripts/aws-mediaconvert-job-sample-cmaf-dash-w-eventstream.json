@@ -1,0 +1,355 @@
+{
+  "Queue": "arn:aws:mediaconvert:us-west-2:467500350645:queues/Default",
+  "UserMetadata": {},
+  "Role": "arn:aws:iam::467500350645:role/MediaConvertRole",
+  "Settings": {
+    "TimecodeConfig": {
+      "Source": "ZEROBASED"
+    },
+    "OutputGroups": [
+      {
+        "Name": "CMAF",
+        "Outputs": [
+          {
+            "ContainerSettings": {
+              "Container": "CMFC"
+            },
+            "VideoDescription": {
+              "Width": 1280,
+              "ScalingBehavior": "DEFAULT",
+              "Height": 720,
+              "TimecodeInsertion": "DISABLED",
+              "AntiAlias": "ENABLED",
+              "Sharpness": 50,
+              "CodecSettings": {
+                "Codec": "H_264",
+                "H264Settings": {
+                  "InterlaceMode": "PROGRESSIVE",
+                  "ScanTypeConversionMode": "INTERLACED",
+                  "NumberReferenceFrames": 3,
+                  "Syntax": "DEFAULT",
+                  "Softness": 0,
+                  "GopClosedCadence": 1,
+                  "GopSize": 90,
+                  "Slices": 1,
+                  "GopBReference": "DISABLED",
+                  "MaxBitrate": 3000000,
+                  "SlowPal": "DISABLED",
+                  "EntropyEncoding": "CABAC",
+                  "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                  "RateControlMode": "QVBR",
+                  "QvbrSettings": {
+                    "QvbrQualityLevel": 7,
+                    "QvbrQualityLevelFineTune": 0
+                  },
+                  "CodecProfile": "MAIN",
+                  "Telecine": "NONE",
+                  "MinIInterval": 0,
+                  "AdaptiveQuantization": "AUTO",
+                  "CodecLevel": "AUTO",
+                  "FieldEncoding": "PAFF",
+                  "SceneChangeDetect": "ENABLED",
+                  "QualityTuningLevel": "SINGLE_PASS",
+                  "FramerateConversionAlgorithm": "DUPLICATE_DROP",
+                  "UnregisteredSeiTimecode": "DISABLED",
+                  "GopSizeUnits": "FRAMES",
+                  "ParControl": "INITIALIZE_FROM_SOURCE",
+                  "NumberBFramesBetweenReferenceFrames": 2,
+                  "RepeatPps": "DISABLED",
+                  "DynamicSubGop": "STATIC"
+                }
+              },
+              "AfdSignaling": "NONE",
+              "DropFrameTimecode": "ENABLED",
+              "RespondToAfd": "NONE",
+              "ColorMetadata": "INSERT"
+            },
+            "NameModifier": "720p"
+          },
+          {
+            "ContainerSettings": {
+              "Container": "CMFC"
+            },
+            "VideoDescription": {
+              "Width": 960,
+              "ScalingBehavior": "DEFAULT",
+              "Height": 540,
+              "TimecodeInsertion": "DISABLED",
+              "AntiAlias": "ENABLED",
+              "Sharpness": 50,
+              "CodecSettings": {
+                "Codec": "H_264",
+                "H264Settings": {
+                  "InterlaceMode": "PROGRESSIVE",
+                  "ScanTypeConversionMode": "INTERLACED",
+                  "NumberReferenceFrames": 3,
+                  "Syntax": "DEFAULT",
+                  "Softness": 0,
+                  "GopClosedCadence": 1,
+                  "GopSize": 90,
+                  "Slices": 1,
+                  "GopBReference": "DISABLED",
+                  "MaxBitrate": 2000000,
+                  "SlowPal": "DISABLED",
+                  "EntropyEncoding": "CABAC",
+                  "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                  "RateControlMode": "QVBR",
+                  "QvbrSettings": {
+                    "QvbrQualityLevel": 7,
+                    "QvbrQualityLevelFineTune": 0
+                  },
+                  "CodecProfile": "MAIN",
+                  "Telecine": "NONE",
+                  "MinIInterval": 0,
+                  "AdaptiveQuantization": "AUTO",
+                  "CodecLevel": "AUTO",
+                  "FieldEncoding": "PAFF",
+                  "SceneChangeDetect": "ENABLED",
+                  "QualityTuningLevel": "SINGLE_PASS",
+                  "FramerateConversionAlgorithm": "DUPLICATE_DROP",
+                  "UnregisteredSeiTimecode": "DISABLED",
+                  "GopSizeUnits": "FRAMES",
+                  "ParControl": "INITIALIZE_FROM_SOURCE",
+                  "NumberBFramesBetweenReferenceFrames": 2,
+                  "RepeatPps": "DISABLED",
+                  "DynamicSubGop": "STATIC"
+                }
+              },
+              "AfdSignaling": "NONE",
+              "DropFrameTimecode": "ENABLED",
+              "RespondToAfd": "NONE",
+              "ColorMetadata": "INSERT"
+            },
+            "NameModifier": "540p"
+          },
+          {
+            "ContainerSettings": {
+              "Container": "CMFC"
+            },
+            "VideoDescription": {
+              "Width": 640,
+              "ScalingBehavior": "DEFAULT",
+              "Height": 360,
+              "TimecodeInsertion": "DISABLED",
+              "AntiAlias": "ENABLED",
+              "Sharpness": 50,
+              "CodecSettings": {
+                "Codec": "H_264",
+                "H264Settings": {
+                  "InterlaceMode": "PROGRESSIVE",
+                  "ScanTypeConversionMode": "INTERLACED",
+                  "NumberReferenceFrames": 3,
+                  "Syntax": "DEFAULT",
+                  "Softness": 0,
+                  "GopClosedCadence": 1,
+                  "GopSize": 90,
+                  "Slices": 1,
+                  "GopBReference": "DISABLED",
+                  "MaxBitrate": 1000000,
+                  "SlowPal": "DISABLED",
+                  "EntropyEncoding": "CABAC",
+                  "FramerateControl": "INITIALIZE_FROM_SOURCE",
+                  "RateControlMode": "QVBR",
+                  "QvbrSettings": {
+                    "QvbrQualityLevel": 7,
+                    "QvbrQualityLevelFineTune": 0
+                  },
+                  "CodecProfile": "MAIN",
+                  "Telecine": "NONE",
+                  "MinIInterval": 0,
+                  "AdaptiveQuantization": "AUTO",
+                  "CodecLevel": "AUTO",
+                  "FieldEncoding": "PAFF",
+                  "SceneChangeDetect": "ENABLED",
+                  "QualityTuningLevel": "SINGLE_PASS",
+                  "FramerateConversionAlgorithm": "DUPLICATE_DROP",
+                  "UnregisteredSeiTimecode": "DISABLED",
+                  "GopSizeUnits": "FRAMES",
+                  "ParControl": "INITIALIZE_FROM_SOURCE",
+                  "NumberBFramesBetweenReferenceFrames": 2,
+                  "RepeatPps": "DISABLED",
+                  "DynamicSubGop": "STATIC"
+                }
+              },
+              "AfdSignaling": "NONE",
+              "DropFrameTimecode": "ENABLED",
+              "RespondToAfd": "NONE",
+              "ColorMetadata": "INSERT"
+            },
+            "NameModifier": "360p"
+          },
+          {
+            "ContainerSettings": {
+              "Container": "CMFC"
+            },
+            "AudioDescriptions": [
+              {
+                "AudioTypeControl": "FOLLOW_INPUT",
+                "AudioSourceName": "Audio Selector 1",
+                "CodecSettings": {
+                  "Codec": "AAC",
+                  "AacSettings": {
+                    "AudioDescriptionBroadcasterMix": "NORMAL",
+                    "Bitrate": 96000,
+                    "RateControlMode": "CBR",
+                    "CodecProfile": "LC",
+                    "CodingMode": "CODING_MODE_2_0",
+                    "RawFormat": "NONE",
+                    "SampleRate": 48000,
+                    "Specification": "MPEG4"
+                  }
+                },
+                "StreamName": "A96",
+                "LanguageCodeControl": "FOLLOW_INPUT"
+              }
+            ],
+            "NameModifier": "a96"
+          },
+          {
+            "ContainerSettings": {
+              "Container": "CMFC"
+            },
+            "AudioDescriptions": [
+              {
+                "AudioTypeControl": "FOLLOW_INPUT",
+                "AudioSourceName": "Audio Selector 1",
+                "CodecSettings": {
+                  "Codec": "AAC",
+                  "AacSettings": {
+                    "AudioDescriptionBroadcasterMix": "NORMAL",
+                    "Bitrate": 64000,
+                    "RateControlMode": "CBR",
+                    "CodecProfile": "LC",
+                    "CodingMode": "CODING_MODE_2_0",
+                    "RawFormat": "NONE",
+                    "SampleRate": 48000,
+                    "Specification": "MPEG4"
+                  }
+                },
+                "StreamName": "A64",
+                "LanguageCodeControl": "FOLLOW_INPUT"
+              }
+            ],
+            "NameModifier": "a64"
+          }
+        ],
+        "OutputGroupSettings": {
+          "Type": "CMAF_GROUP_SETTINGS",
+          "CmafGroupSettings": {
+            "WriteHlsManifest": "ENABLED",
+            "WriteDashManifest": "ENABLED",
+            "SegmentLength": 6,
+            "MinFinalSegmentLength": 0,
+            "Destination": "s3://customer-123/customer-s/dash/test1/test",
+            "FragmentLength": 2,
+            "SegmentControl": "SEGMENTED_FILES",
+            "MpdProfile": "MAIN_PROFILE",
+            "WriteSegmentTimelineInRepresentation": "ENABLED",
+            "ManifestDurationFormat": "INTEGER",
+            "StreamInfResolution": "INCLUDE",
+            "ClientCache": "ENABLED",
+            "ManifestCompression": "NONE",
+            "CodecSpecification": "RFC_4281"
+          }
+        }
+      },
+      {
+        "Name": "File Group",
+        "Outputs": [
+          {
+            "ContainerSettings": {
+              "Container": "RAW"
+            },
+            "VideoDescription": {
+              "ScalingBehavior": "DEFAULT",
+              "TimecodeInsertion": "DISABLED",
+              "AntiAlias": "ENABLED",
+              "Sharpness": 50,
+              "CodecSettings": {
+                "Codec": "FRAME_CAPTURE",
+                "FrameCaptureSettings": {
+                  "FramerateNumerator": 1,
+                  "FramerateDenominator": 5,
+                  "MaxCaptures": 10000000,
+                  "Quality": 80
+                }
+              },
+              "DropFrameTimecode": "ENABLED",
+              "ColorMetadata": "INSERT"
+            },
+            "NameModifier": "jpg/thumbs"
+          },
+          {
+            "ContainerSettings": {
+              "Container": "RAW"
+            },
+            "NameModifier": "vtt/test",
+            "CaptionDescriptions": [
+              {
+                "CaptionSelectorName": "Captions Selector 1",
+                "DestinationSettings": {
+                  "DestinationType": "WEBVTT"
+                },
+                "LanguageCode": "ENG",
+                "LanguageDescription": "English"
+              }
+            ]
+          }
+        ],
+        "OutputGroupSettings": {
+          "Type": "FILE_GROUP_SETTINGS",
+          "FileGroupSettings": {
+            "Destination": "s3://customer-123/customer-s/dash-dai/test1"
+          }
+        }
+      }
+    ],
+    "AdAvailOffset": 0,
+    "Esam": {
+      "SignalProcessingNotification": {
+        "SccXml": "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n  <SignalProcessingNotification xmlns=\"urn:cablelabs:iptvservices:esam:xsd:signal:1\" xmlns:sig=\"urn:cablelabs:md:xsd:signaling:3.0\" xmlns:common=\"urn:cablelabs:iptvservices:esam:xsd:common:1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" acquisitionPointIdentity=\"ExampleESAM\">\n    <common:BatchInfo batchId=\"1\">\n      <common:Source xsi:type=\"content:MovieType\" uriId=\"/mnt/support/bferrentino/teting_content/HEVC_rap\"/>\n    </common:BatchInfo>\n        <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"1\" signalPointID=\"000.000\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"000.000\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"1\" segmentTypeId=\"52\" upidType=\"9\" upid=\"1\" duration=\"PT30S\" segmentNumber=\"1\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"2\" signalPointID=\"30.000\" action=\"create\" segmentNumber=\"1\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"30.000\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"1\" segmentTypeId=\"53\" upidType=\"9\" upid=\"2\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"3\" signalPointID=\"638.555\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"638.555\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"2\" segmentTypeId=\"52\" upidType=\"9\" upid=\"3\" duration=\"PT30S\" segmentNumber=\"2\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"4\" signalPointID=\"668.555\" action=\"create\" segmentNumber=\"2\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"668.555\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"2\" segmentTypeId=\"53\" upidType=\"9\" upid=\"4\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n        <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"5\" signalPointID=\"1118.035\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"1118.035\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"3\" segmentTypeId=\"52\" upidType=\"9\" upid=\"5\" duration=\"PT30S\" segmentNumber=\"3\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"6\" signalPointID=\"1148.035\" action=\"create\" segmentNumber=\"3\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"1148.035\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"3\" segmentTypeId=\"53\" upidType=\"9\" upid=\"6\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"7\" signalPointID=\"1517.184\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"1517.184\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"4\" segmentTypeId=\"52\" upidType=\"9\" upid=\"7\" duration=\"PT30S\" segmentNumber=\"4\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"8\" signalPointID=\"1547.184\" action=\"create\" segmentNumber=\"4\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"1547.184\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"4\" segmentTypeId=\"53\" upidType=\"9\" upid=\"8\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"9\" signalPointID=\"1837.880\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"1837.880\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"5\" segmentTypeId=\"52\" upidType=\"9\" upid=\"9\" duration=\"PT30S\" segmentNumber=\"5\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"10\" signalPointID=\"1867.880\" action=\"create\" segmentNumber=\"5\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"1867.880\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"5\" segmentTypeId=\"53\" upidType=\"9\" upid=\"10\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"11\" signalPointID=\"2139.807\" action=\"create\">\n      <sig:NPTPoint nptPoint=\"2139.807\"/>\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"6\" segmentTypeId=\"52\" upidType=\"9\" upid=\"11\" duration=\"PT30S\" segmentNumber=\"6\" segmentsExpected=\"1\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n    <ResponseSignal acquisitionPointIdentity=\"ExampleESAM\" acquisitionSignalID=\"12\" signalPointID=\"2169.807\" action=\"create\" segmentNumber=\"6\" segmentsExpected=\"0\">\n      <sig:NPTPoint nptPoint=\"2169.807\" />\n      <sig:SCTE35PointDescriptor spliceCommandType=\"06\">\n        <sig:SegmentationDescriptorInfo segmentEventId=\"6\" segmentTypeId=\"53\" upidType=\"9\" upid=\"12\"/>\n      </sig:SCTE35PointDescriptor>\n      <sig:StreamTimes>\n        <sig:StreamTime timeType=\"HLS\"/>\n      </sig:StreamTimes>\n    </ResponseSignal>\n  </SignalProcessingNotification>"
+      },
+      "ResponseSignalPreroll": 4000
+    },
+    "Inputs": [
+      {
+        "AudioSelectors": {
+          "Audio Selector 1": {
+            "Offset": 0,
+            "DefaultSelection": "DEFAULT",
+            "ProgramSelection": 1
+          }
+        },
+        "VideoSelector": {
+          "ColorSpace": "FOLLOW",
+          "Rotate": "DEGREE_0",
+          "AlphaBehavior": "DISCARD"
+        },
+        "FilterEnable": "AUTO",
+        "PsiControl": "USE_PSI",
+        "FilterStrength": 0,
+        "DeblockFilter": "DISABLED",
+        "DenoiseFilter": "DISABLED",
+        "InputScanType": "AUTO",
+        "TimecodeSource": "ZEROBASED",
+        "CaptionSelectors": {
+          "Captions Selector 1": {
+            "SourceSettings": {
+              "SourceType": "SCC",
+              "FileSourceSettings": {
+                "SourceFile": "s3://customer-123/customer-s/test_source/ENG.scc",
+                "Convert608To708": "UPCONVERT"
+              }
+            }
+          }
+        },
+        "FileInput": "s3://customer-123/customer-s/test_source/master.mp4"
+      }
+    ]
+  },
+  "AccelerationSettings": {
+    "Mode": "DISABLED"
+  },
+  "StatusUpdateInterval": "SECONDS_10",
+  "Priority": 0
+}
