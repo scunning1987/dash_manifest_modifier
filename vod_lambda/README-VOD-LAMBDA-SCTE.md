@@ -86,3 +86,53 @@ Add your AWS Lambda function as a target of the event, give the event trigger a 
 ## How To Use
 The script will now run whenever a MediaConvert job completes and meets the event pattern specified in our CloudWatch event rule.
 
+By default, the script is designed to write a new manifest file, using the existing name but with a **-dai** suffix as shown below in the S3 bucket browser:
+
+![](images/dash-manifest-vod-scte35-s3.png?width=80pc&classes=border,shadow)
+
+
+Here's a manifest snippet of what you can expect to see at the top of the newly written manifest (note the EventStream element and child Event elements):
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:cenc="urn:mpeg:cenc:2013" xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd" type="static" minBufferTime="PT6S" profiles="urn:mpeg:dash:profile:isoff-main:2011" mediaPresentationDuration="PT1H28M11.733S" xmlns:scte35="urn:scte:scte35:2013:xml">
+	<Period start="PT0.00S" duration="PT88M11.72S" id="1">
+		<EventStream timescale="90000" schemeIdUri="urn:scte:scte35:2013:xml">
+			<Event timescale="90000" duration="2700000" presentationTime="57469949">
+				<scte35:SpliceInfoSection protocolVersion="0" tier="4095">
+					<scte35:TimeSignal>
+						<scte35:SpliceTime ptsTime="57469949"/>
+					</scte35:TimeSignal>
+					<scte35:SegmentationDescriptor segmentationEventId="1" segmentationEventCancelIndicator="false" segmentationDuration="2700000">
+						<scte35:DeliveryRestrictions webDeliveryAllowedFlag="false" noRegionalBlackoutFlag="false" archiveAllowedFlag="true" deviceRestrictions="3"/>
+						<scte35:SegmentationUpid segmentationUpidType="12" segmentationUpidLength="0" segmentationTypeId="52" segmentNum="0" segmentsExpected="1"/>
+						<scte35:BreakDuration duration="2700000"/>
+					</scte35:SegmentationDescriptor>
+				</scte35:SpliceInfoSection>
+			</Event>
+			<Event timescale="90000" duration="2700000" presentationTime="57469949">
+				<scte35:SpliceInfoSection protocolVersion="0" tier="4095">
+					<scte35:TimeSignal>
+						<scte35:SpliceTime ptsTime="57469949"/>
+					</scte35:TimeSignal>
+					<scte35:SegmentationDescriptor segmentationEventId="1" segmentationEventCancelIndicator="false" segmentationDuration="2700000">
+						<scte35:DeliveryRestrictions webDeliveryAllowedFlag="false" noRegionalBlackoutFlag="false" archiveAllowedFlag="true" deviceRestrictions="3"/>
+						<scte35:SegmentationUpid segmentationUpidType="12" segmentationUpidLength="0" segmentationTypeId="53" segmentNum="0" segmentsExpected="1"/>
+						<scte35:BreakDuration duration="2700000"/>
+					</scte35:SegmentationDescriptor>
+				</scte35:SpliceInfoSection>
+			</Event>
+		</EventStream>
+		<AdaptationSet mimeType="video/mp4" frameRate="30000/1001" segmentAlignment="true" subsegmentAlignment="true" startWithSAP="1" subsegmentStartsWithSAP="1" bitstreamSwitching="false">
+			<Representation id="1" width="1280" height="720" bandwidth="3000000" codecs="avc1.4d401f">
+				<SegmentTemplate media="test720p_$Number%09d$.cmfv" initialization="test720pinit.cmfv" startNumber="1" timescale="90000" presentationTimeOffset="0">
+					<SegmentTimeline>
+						<S t="0" d="540540" r="105"/>
+						<S t="57297240" d="174174"/>
+						<S t="57471414" d="96096"/>
+						<S t="57567510" d="540540" r="78"/>
+						<S t="100270170" d="354354"/>
+		                                ...
+	</Period>
+</MPD>				
+```
