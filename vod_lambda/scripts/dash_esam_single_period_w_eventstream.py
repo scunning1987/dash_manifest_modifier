@@ -75,15 +75,13 @@ def lambda_handler(event, context):
                 duration_s = int(re.search('PT(.+?)S', duration_string).group(1))
             else: # S is not present, so we'll check if M was specified, and if not we'll do a default duration of 30 seconds
                 if duration_m_s == 0:
-                    duration_s = 30
-                else:
-                    duration_s = str(0)
+                    duration_s = 0
 
             # Duration of break in seconds
-            break_duration = duration_m_s + duration_s
+            break_duration = str(duration_m_s + duration_s)
         except:
             LOGGER.warning("unable to get adbreak duration from ESAM xml, defaulting to 30 seconds")
-            break_duration = str(30)
+            break_duration = str(0)
 
         if signal['sig:SCTE35PointDescriptor']['sig:SegmentationDescriptorInfo']['@segmentTypeId'] == "52":
             esam_break_points_duration.append([signal['@signalPointID'],break_duration])
